@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+lib_LTLIBRARIES += libpyopenocd.la
 noinst_LTLIBRARIES += %D%/libopenocd.la
 bin_PROGRAMS += %D%/openocd
 
@@ -9,6 +10,9 @@ bin_PROGRAMS += %D%/openocd
 %C%_libopenocd_la_SOURCES = \
 	%D%/hello.c %D%/hello.h \
 	%D%/openocd.c %D%/openocd.h
+
+libpyopenocd_la_SOURCES =
+libpyopenocd_la_LIBADD = -ljim
 
 %C%_openocd_LDADD = %D%/libopenocd.la
 
@@ -21,23 +25,31 @@ else
 endif
 
 %C%_libopenocd_la_CPPFLAGS =
+libpyopenocd_la_CPPFLAGS =
 
 # banner output includes RELSTR appended to $VERSION from the configure script
 # guess-rev.sh returns either a repository version ID or "-snapshot"
 if RELEASE
 %C%_libopenocd_la_CPPFLAGS += -DRELSTR=\"\"
 %C%_libopenocd_la_CPPFLAGS += -DGITVERSION=\"\"
+libpyopenocd_la_CPPFLAGS += -DRELSTR=\"\"
+libpyopenocd_la_CPPFLAGS += -DGITVERSION=\"\"
 else
 %C%_libopenocd_la_CPPFLAGS += -DRELSTR=\"`$(top_srcdir)/guess-rev.sh $(top_srcdir)`\"
 %C%_libopenocd_la_CPPFLAGS += -DGITVERSION=\"`cd $(top_srcdir) && git describe`\"
 %C%_libopenocd_la_CPPFLAGS += -DPKGBLDDATE=\"`date +%F-%R`\"
+libpyopenocd_la_CPPFLAGS += -DRELSTR=\"`$(top_srcdir)/guess-rev.sh $(top_srcdir)`\"
+libpyopenocd_la_CPPFLAGS += -DGITVERSION=\"`cd $(top_srcdir) && git describe`\"
+libpyopenocd_la_CPPFLAGS += -DPKGBLDDATE=\"`date +%F-%R`\"
 endif
 
 # add default CPPFLAGS
 %C%_libopenocd_la_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS)
+libpyopenocd_la_CPPFLAGS += $(AM_CPPFLAGS) $(CPPFLAGS)
 
 # the library search path.
 %C%_libopenocd_la_LDFLAGS = $(all_libraries)
+libpyopenocd_la_LDFLAGS = $(all_libraries)
 
 if IS_MINGW
 MINGWLDADD = -lws2_32
@@ -46,6 +58,19 @@ MINGWLDADD =
 endif
 
 %C%_libopenocd_la_LIBADD = \
+	%D%/xsvf/libxsvf.la \
+	%D%/svf/libsvf.la \
+	%D%/pld/libpld.la \
+	%D%/jtag/libjtag.la \
+	%D%/transport/libtransport.la \
+	%D%/flash/libflash.la \
+	%D%/target/libtarget.la \
+	%D%/server/libserver.la \
+	%D%/rtos/librtos.la \
+	%D%/helper/libhelper.la \
+	%D%/rtt/librtt.la
+
+libpyopenocd_la_LIBADD += \
 	%D%/xsvf/libxsvf.la \
 	%D%/svf/libsvf.la \
 	%D%/pld/libpld.la \
