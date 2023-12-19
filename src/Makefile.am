@@ -11,8 +11,10 @@ bin_PROGRAMS += %D%/openocd
 	%D%/hello.c %D%/hello.h \
 	%D%/openocd.c %D%/openocd.h
 
-%C%_libpyopenocd_la_SOURCES =
-%C%_libpyopenocd_la_LIBADD = -ljim %D%/libopenocd.la
+%C%_libpyopenocd_la_SOURCES = \
+	%D%/pyopenocd.c \
+	%D%/hello.c %D%/hello.h
+%C%_libpyopenocd_la_LIBADD = -ljim
 
 %C%_openocd_LDADD = %D%/libopenocd.la
 
@@ -58,6 +60,19 @@ MINGWLDADD =
 endif
 
 %C%_libopenocd_la_LIBADD = \
+	%D%/xsvf/libxsvf.la \
+	%D%/svf/libsvf.la \
+	%D%/pld/libpld.la \
+	%D%/jtag/libjtag.la \
+	%D%/transport/libtransport.la \
+	%D%/flash/libflash.la \
+	%D%/target/libtarget.la \
+	%D%/server/libserver.la \
+	%D%/rtos/librtos.la \
+	%D%/helper/libhelper.la \
+	%D%/rtt/librtt.la
+
+%C%_libpyopenocd_la_LIBADD += \
 	%D%/xsvf/libxsvf.la \
 	%D%/svf/libsvf.la \
 	%D%/pld/libpld.la \
