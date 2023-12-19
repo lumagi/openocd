@@ -12,7 +12,7 @@ bin_PROGRAMS += %D%/openocd
 	%D%/openocd.c %D%/openocd.h
 
 %C%_libpyopenocd_la_SOURCES =
-%C%_libpyopenocd_la_LIBADD = %D%/libopenocd.la
+%C%_libpyopenocd_la_LIBADD = -ljim %D%/libopenocd.la
 
 %C%_openocd_LDADD = %D%/libopenocd.la
 
