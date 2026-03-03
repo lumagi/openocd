@@ -353,6 +353,11 @@ static void jtag_prelude(tap_state_t state)
 	cmd_queue_cur_state = state;
 }
 
+void jtag_add_set_signal(char *name, char state)
+{
+	interface_jtag_add_set_signal(name, state);
+}
+
 void jtag_add_ir_scan_noverify(struct jtag_tap *active, const struct scan_field *in_fields,
 	tap_state_t state)
 {

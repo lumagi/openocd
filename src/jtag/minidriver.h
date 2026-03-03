@@ -36,6 +36,7 @@
 /* and it may provide additional declarations that must be defined. */
 #include <jtag/drivers/minidriver_imp.h>
 
+int interface_jtag_add_set_signal(char *name, char state);
 int interface_jtag_add_ir_scan(struct jtag_tap *active,
 		const struct scan_field *fields,
 		tap_state_t endstate);

@@ -123,7 +123,7 @@ static uint16_t jtag_direction_init;
 
 static int ftdi_swd_switch_seq(enum swd_special_seq seq);
 
-static struct signal *find_signal_by_name(const char *name)
+struct signal *find_signal_by_name(const char *name)
 {
 	for (struct signal *sig = signals; sig; sig = sig->next) {
 		if (strcmp(name, sig->name) == 0)
@@ -150,7 +150,7 @@ static struct signal *create_signal(const char *name)
 	return *psig;
 }
 
-static int ftdi_set_signal(const struct signal *s, char value)
+int ftdi_set_signal(const struct signal *s, char value)
 {
 	bool data;
 	bool oe;
@@ -307,6 +307,29 @@ static void ftdi_end_state(tap_state_t state)
 		LOG_ERROR("BUG: %s is not a stable end state", tap_state_name(state));
 		exit(-1);
 	}
+}
+
+static void ftdi_execute_set_signal(struct jtag_command *cmd)
+{
+        struct signal *sig = find_signal_by_name(cmd->cmd.signal->name);
+        if (!sig) {
+                LOG_ERROR("interface configuration doesn't define signal '%s'", cmd->cmd.signal->name);
+                return;
+        }
+
+        switch (cmd->cmd.signal->state) {
+        case '0':
+        case '1':
+        case 'z':
+        case 'Z':
+        	ftdi_set_signal(sig, cmd->cmd.signal->state);
+                break;
+        default:
+                LOG_ERROR("unknown signal level '%c', use 0, 1 or z", cmd->cmd.signal->state);
+                return;
+        }
+
+        return;
 }
 
 static void ftdi_execute_runtest(struct jtag_command *cmd)
@@ -618,6 +641,9 @@ static void ftdi_execute_command(struct jtag_command *cmd)
 			break;
 		case JTAG_TMS:
 			ftdi_execute_tms(cmd);
+			break;
+		case JTAG_SIGNAL:
+			ftdi_execute_set_signal(cmd);
 			break;
 		default:
 			LOG_ERROR("BUG: unknown JTAG command type encountered: %d", cmd->type);

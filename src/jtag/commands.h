@@ -86,6 +86,11 @@ struct sleep_command {
 	uint32_t us;
 };
 
+struct signal_command {
+	char *name;
+	char state;
+};
+
 /**
  * Encapsulates a series of bits to be clocked out, affecting state
  * and mode of the interface.
@@ -119,6 +124,7 @@ union jtag_command_container {
 	struct end_state_command *end_state;
 	struct sleep_command *sleep;
 	struct tms_command *tms;
+	struct signal_command *signal;
 };
 
 /**
@@ -141,6 +147,7 @@ enum jtag_command_type {
 	JTAG_SLEEP        = 7,
 	JTAG_STABLECLOCKS = 8,
 	JTAG_TMS          = 9,
+	JTAG_SIGNAL       = 10,
 };
 
 struct jtag_command {

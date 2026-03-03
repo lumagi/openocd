@@ -44,6 +44,24 @@ static void jtag_callback_queue_reset(void)
 	jtag_callback_queue_tail = NULL;
 }
 
+int interface_jtag_add_set_signal(char *name, char state)
+{
+	struct jtag_command *cmd = cmd_queue_alloc(sizeof(struct jtag_command));
+	struct signal_command *signal = cmd_queue_alloc(sizeof(struct signal_command));
+
+	size_t name_len = strnlen(name, 31) + 1;
+	char *name_buf = cmd_queue_alloc(name_len);
+	memcpy(name_buf, name, name_len);
+
+	signal->name = name_buf;
+	signal->state = state;
+	cmd->cmd.signal = signal;
+	cmd->type = JTAG_SIGNAL;
+
+	jtag_queue_command(cmd);
+	return ERROR_OK;
+}
+
 /**
  * see jtag_add_ir_scan()
  *

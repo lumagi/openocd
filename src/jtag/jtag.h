@@ -281,6 +281,8 @@ int jtag_init_inner(struct command_context *cmd_ctx);
  * end state and a subsequent jtag_add_pathmove() must be issued.
  */
 
+void jtag_add_set_signal(char *name, char state);
+
 /**
  * Generate an IR SCAN with a list of scan fields with one entry for
  * each enabled TAP.
